@@ -17,7 +17,9 @@ public class WaveSpawner : MonoBehaviour
     public DataWave[] waves;
     public GameObject enemyPrefab;
     public GameObject powerUpPrefab;
-    public Transform[] spawnPoints; 
+    public Transform[] spawnPoints;
+
+    public static int enemyCount = 0;
 
     void Start()
     {
@@ -30,7 +32,10 @@ public class WaveSpawner : MonoBehaviour
         {
             yield return StartCoroutine(SpawnWave(wave));
 
-            yield return new WaitUntil(() => FindObjectsByType<Enemy>(FindObjectsSortMode.None).Length == 0);
+            while (enemyCount > 0)
+            {
+                yield return null; 
+            }
         }
     }
 
@@ -51,6 +56,7 @@ public class WaveSpawner : MonoBehaviour
         {
             Transform point = selectedPoints[Random.Range(0, selectedPoints.Count)];
             Instantiate(enemyPrefab, point.position, Quaternion.identity);
+            enemyCount++; // นับตอน spawn
             yield return new WaitForSeconds(wave.spawnInterval);
         }
     }
@@ -64,7 +70,7 @@ public class WaveSpawner : MonoBehaviour
         {
             int randIndex = Random.Range(0, allPoints.Count);
             selected.Add(allPoints[randIndex]);
-            allPoints.RemoveAt(randIndex); // ไม่ซ้ำ
+            allPoints.RemoveAt(randIndex);
         }
 
         return selected;

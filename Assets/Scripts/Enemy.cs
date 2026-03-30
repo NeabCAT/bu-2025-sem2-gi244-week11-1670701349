@@ -27,6 +27,11 @@ public class Enemy : MonoBehaviour
         Vector3 dir = player.transform.position - transform.position;
         dir.Normalize();
         rb.AddForce(dir * speed);
+
+        if (transform.position.y < -5f)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void StartStun(float duration)
@@ -44,5 +49,8 @@ public class Enemy : MonoBehaviour
         isStun = false;
     }
 
-
+    void OnDestroy()
+    {
+        WaveSpawner.enemyCount--;
+    }
 }
